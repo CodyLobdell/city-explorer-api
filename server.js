@@ -5,11 +5,11 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const weather = require('./weather.json');
 
 
 
-const PORT = process.env.PORT || 3301;
+
+const PORT = process.env.PORT || 3001;
 
 class Forecast {
   constructor(date, description) {
@@ -37,7 +37,7 @@ app.get('/weather', (request, response) => {
   let city = weather.find(item =>
     item.city_name.toLowerCase() === request.query.city_name.toLowerCase());
   if (city) {
-    let weatherArray = city.data.map(weather => new Forecast(weather.valid_date, weather.weather.description))
+    let weatherArray = city.data.map(weather => new Forecast(weather.valid_date, weather.weather.description));
     response.status(200).send(weatherArray);
 
 
