@@ -1,63 +1,57 @@
 'use strict';
 
-require('dotenv').config();
-
+const axios = require('axios');
 const express = require('express');
 const cors = require('cors');
+
+require('dotenv').config();
+
 const app = express();
-
-
-
+app.use(cors());
 
 const PORT = process.env.PORT || 3001;
 
 class Forecast {
-  constructor(date, description) {
-    this.date = date;
-    this.description = description;
+  constructor(ForecastObject) {
+    this.date = ForecastObject.datetime;
+    this.description = ForecastObject.weather.description;
+    this.high = ForecastObject.high_temp;
+    this.low = ForecastObject.low_temp;
   }
 }
 
-app.use(cors());
-// app.get('/weather', (request, response) => {
-//     console.log(request.url);
-//     response.status(200).send('Heres the weather');
-// });
-
-app.get('/search', (request, response) => {
-  console.log(request.query);
-  response.send('Working on it');
-
+app.get('/', (req, res) => {
+  res.status(200).send('Is this thing working yet?');
 });
 
-app.get('/weather', (request, response) => {
+app.get('/weather', async (req, res, next) => {
+  try {
+    let coord = [req.query.lat, req.query.lon];
+    let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&lat=${coord[0]}&lon=${coord[1]}&days=5`;
 
+    let forecast = await axios(url);
 
-  // console.log(request.query.city_name);
-  let city = weather.find(item =>
-    item.city_name.toLowerCase() === request.query.city_name.toLowerCase());
-  if (city) {
-    let weatherArray = city.data.map(weather => new Forecast(weather.valid_date, weather.weather.description));
-    response.status(200).send(weatherArray);
+    let weatherData = forecast.data.data.map(info => {
+      return new Forecast(info);
+    });
 
+    res.send(weatherData);
 
+  } catch (error) {
+    next(error);
   }
-  else {
-    response.status(404).send('weather not found');
-  }
-
-  //  else {
-  //     response.status(200).send(weather)
-  // }  
 });
 
-app.use((err, request, response, next) => {
-
-
-  console.log(err);
-  response.status(500).send('BAD THINGS OCCURRED');
+app.get('*', (req, res) => {
+  res.send('The resource requested does not exist');
 });
 
+app.use((error, request, response, next) => {
+  response.status(500).send(error.message);
+});
+
+// Listening
 app.listen(PORT, () => {
-  console.log('App is running');
+  console.log(`Listening...port ${PORT}`);
 });
+
