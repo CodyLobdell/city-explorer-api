@@ -19,21 +19,21 @@
 <!-- Give credit (and a link) to other people or resources that helped you build this application. -->
 
 
-## Name of feature: 
+# Name of feature: 
 City-Explorer-API
 
-## Estimate of time needed to complete: 
+# Estimate of time needed to complete: 
 5- Hours
 
-## Start time: 
+# Start time: 
 03-08-2023 4:59pm
 
-## Finish time: 
+# Finish time: 
 
 
-## Actual time needed to complete: 
+# Actual time needed to complete: 
 
 
 ## WRRC
 
-
+![Alt text](/wrrcImage/flowchart_lab07.jpg)
