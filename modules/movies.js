@@ -1,14 +1,6 @@
 'use strict';
 
 const axios = require('axios');
-const express = require('express');
-const cors = require('cors');
-
-require('dotenv').config();
-
-const app = express();
-app.use(cors());
-
 
 
 //CLASS
@@ -26,21 +18,21 @@ class Movie {
 }
 
 //FUNCTION
-app.get('/movies', async (req, res, next) => {
-  try {
-    let city = req.query.search;
+function getMovies(req, res, next) {
+  let params = {
+    api_key: process.env.THEMOVIEDB_API_KEY,
+    language: 'en-US',
+    query: req.query.search,
+    page: 1,
+    include_adult: false,
+  };
 
-    let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.THEMOVIEDB_API_KEY}&language=en-US&query=${city}&page=1&include_adult=false`;
+  let url = "https://api.themoviedb.org/3/search/movie";
 
-    let movies = await axios(url);
+  axios.get(url, { params })
+    .then(movieData => movieData.data.results.map(movie => new Movie(movie)))
+    .then(dataToSend => res.send(dataToSend).sendStatus(200))
+    .catch(err => console.error(err));
+}
 
-    let movieData = movies.data.results.map(movie => {
-      return new Movie(movie);
-    });
-
-    res.send(movieData);
-
-  } catch (error) {
-    next(error);
-  }
-});
+module.exports = getMovies;

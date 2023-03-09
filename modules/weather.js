@@ -1,15 +1,9 @@
 'use strict';
 
 const axios = require('axios');
-const express = require('express');
-const cors = require('cors');
 
-require('dotenv').config();
 
-const app = express();
-app.use(cors());
-
-//CLASSES
+//CLASS
 class Forecast {
   constructor(ForecastObject) {
     this.date = ForecastObject.datetime,
@@ -20,22 +14,21 @@ class Forecast {
 }
 
 //FUNCTION
-app.get('/weather', async (req, res, next) => {
-  try {
-    let coord = [req.query.lat, req.query.lon];
-    let url = `https://api.weatherbit.io/v2.0/forecast/daily?key=${process.env.WEATHERBIT_API_KEY}&lat=${coord[0]}&lon=${coord[1]}&days=5`;
+function getForecast (req, res, next) {
 
-    let forecast = await axios(url);
+  let params = {
+    key: process.env.WEATHERBIT_API_KEY,
+    lat: req.query.lat,
+    lon: req.query.lon,
+    days: 5
+  };
 
-    let weatherData = forecast.data.data.map(info => {
-      return new Forecast(info);
-    });
+  let url = 'https://api.weatherbit.io/v2.0/forecast/daily';
 
-    res.send(weatherData);
+  axios.get(url, { params })
+    .then(forecast => forecast.data.data.map(info => new Forecast(info)))
+    .then(dataToSend => res.send(dataToSend).sendStatus(200))
+    .catch(err => console.error(err));
+}
 
-  } catch (error) {
-    next(error);
-  }
-});
-
-module.exports = app.get;
+module.exports = getForecast;
