@@ -37,7 +37,7 @@ class Movie {
 
 //Routes
 app.get('/', (req, res) => {
-  res.status(200).send('Alive!');
+  res.status(200).send('Is this thing working yet?');
 });
 
 //Forecast route
