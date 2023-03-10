@@ -1,6 +1,8 @@
 'use strict';
 
-const axios = require('axios');
+
+const getWeather = require('./modules/weather');
+const getMovies = require('./modules/movies');
 const express = require('express');
 const cors = require('cors');
 
@@ -10,10 +12,6 @@ const app = express();
 app.use(cors());
 
 const PORT = process.env.PORT || 3001;
-
-
-
-
 
 //Routes
 app.get('/', (req, res) => {
