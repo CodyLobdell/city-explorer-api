@@ -14,7 +14,7 @@ app.get('/weather', weatherHandler);
 app.get('/movies', movieHandler);
 
 app.get('*', (req, res) => {
-  res.send('The resource requested does not exist');
+  res.send('Lets Get Crackin!');
 });
 
 app.use((error, request, response, next) => {
